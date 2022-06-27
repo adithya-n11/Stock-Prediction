@@ -6,18 +6,25 @@ import pandas_datareader as data
 from keras.models import load_model
 import streamlit as st
 import datetime
+with open('styles.css') as f:
+  st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
+today=datetime.date.today()
+now=datetime.datetime.now()
+st.write(today.strftime("%d/%m/%Y"))
+st.write(now.strftime("%H:%M:%S"))
 st.title("Stock Price Prediction")
+user_input = st.selectbox('Enter Stock Ticker',('AAPL','TSLA','MSFT','GOOG','GOOGL','AMZN','HDB','WIT','INFY','MMYT','AZRE','TTM'))
+
 start = st.date_input('Enter Start Date (YYYY-MM-DD)',datetime.date(2010,1,1))
-end = st.date_input('Enter End Date (YYYY-MM-DD)',datetime.date(2019,12,31))
-user_input = st.text_input('Enter Stock Ticker','AAPL')
+end = st.date_input('Enter End Date (YYYY-MM-DD)',now)
 df = data.DataReader(user_input,data_source='yahoo', start=start, end=end)
 columns = st.columns((1,1))
 
 
 
 # Describing Data
-st.subheader('Data from 2010 - 2019')
+st.subheader('Data from '+str(start.year)+' and '+str(end.year))
 st.write(df.describe())
 
 # Visualisations
@@ -79,6 +86,7 @@ scale_factor = 1/scaler[0]
 y_predicted = y_predicted*scale_factor
 y_test = y_test*scale_factor
 
+
 # Prediction Viz
 st.subheader("Predictions vs Actual")
 fig2=plt.figure(figsize=(12,6))
@@ -88,3 +96,10 @@ plt.xlabel('Time')
 plt.ylabel('Price')
 plt.legend()
 st.pyplot(fig2)
+
+
+# Numerical values
+acc = model.history.history['acc']
+st.subheader(acc)
+
+
