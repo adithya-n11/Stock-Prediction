@@ -17,7 +17,7 @@ st.title("Stock Price Prediction")
 user_input = st.selectbox('Enter Stock Ticker',('AAPL','TSLA','MSFT','GOOG','GOOGL','AMZN','HDB','WIT','INFY','MMYT','AZRE','TTM'))
 
 start = st.date_input('Enter Start Date (YYYY-MM-DD)',datetime.date(2010,1,1))
-end = st.date_input('Enter End Date (YYYY-MM-DD)',now)
+end = st.date_input('Enter End Date (YYYY-MM-DD)',datetime.date(2019,12,31))
 df = data.DataReader(user_input,data_source='yahoo', start=start, end=end)
 columns = st.columns((1,1))
 
@@ -98,8 +98,34 @@ plt.legend()
 st.pyplot(fig2)
 
 
-# Numerical values
-acc = model.history.history['acc']
-st.subheader(acc)
+# Accuracy
+from sklearn.metrics import mean_squared_error, r2_score, mean_absolute_error
+mse = mean_squared_error(y_test,y_predicted)
+r2 = r2_score(y_test,y_predicted)
+mae = mean_absolute_error(y_test,y_predicted)
+st.subheader("R\u00b2 Score : "+str(r2))
+st.subheader("Mean square error : "+str(mse))
+st.subheader("Mean absolute error : "+str(mae))
 
 
+# Regression Model
+# from sklearn.model_selection import train_test_split
+# from sklearn.preprocessing import StandardScaler
+# df = data.DataReader(user_input,data_source='yahoo', start=start, end=end)
+# df = df.drop(['Date'])
+# X = np.array(df.index).reshape(-1,1)
+# Y = df['Close']
+# X_train,X_test,Y_train,Y_test = train_test_split(X,Y,test_size=0.2,random_state=100)
+# scaler = StandardScaler().fit(X_train)
+# from sklearn.linear_model import LinearRegression
+# lm=LinearRegression()
+# lm.fit(X_train,Y_train)
+#
+# # Reg Viz
+# fig3=plt.figure(figsize=(12,6))
+# plt.scatter(X_train,Y_train,c='red',label='Actual')
+# plt.plot(X_train,lm.predict(X_train),c='black',label='Predicted')
+# plt.legend()
+# plt.xlabel('Time')
+# plt.ylabel('Price')
+# st.pyplot(fig3)
